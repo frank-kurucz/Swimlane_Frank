@@ -1,0 +1,50 @@
+beforeEach(function(){
+	cy.visit("http://todomvc.com/examples/angular2/")
+})
+
+it("can add a new todo to an empty list", function(){
+  cy
+	.get("#new-todo").type("to do 1").type("{enter"}")
+	.get("#todo-list li").should("contain", "to do 1")
+})
+
+it("can add a second todo to a list", function(){
+  cy.get("#new-todo")
+	.type("to do 1").type("{enter"}")
+	.type("to do 2").type("{enter"}")
+  cy.get("#todo-list li:first:next")
+		.should("contain", "to do 2")
+})
+
+it("adding a second to do item will not change the first one", function(){
+  cy.get("#new-todo")
+	.type("to do 1").type("{enter"}")
+	.type("to do 2").type("{enter"}")
+  cy.get("#todo-list li:first").should("contain", "to do 1")
+})
+
+
+it("completing an item should only affect the selected item", function(){
+  cy.get("#new-todo")
+	.type("to do 1").type("{enter"}")
+	.type("to do 2").type("{enter"}")
+  cy.get("#todo-list li:first").find("input.toggle").click()
+  cy.get("#todo-list li:first").should("have.class". "completed")
+  cy.get("#todo-list li:first:next").should("not.have.class", "completed")
+})
+
+it("duplicate entries are not allowed", function(){
+  cy.get("#new-todo")
+	.type("to do 1").type("{enter"}")
+	.type("to do 1").type("{enter"}")
+  cy.get("#todo-list li:first:next")
+		.should("not.contain", "to do 1")
+})
+
+it("duplicate entries are not allowed by count", function(){
+  cy.get("#new-todo")
+	.type("to do 1").type("{enter"}")
+	.type("to do 1").type("{enter"}")
+  expect(cy.get("#todo-list li:count").to.equal(1)
+
+})
